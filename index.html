@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Barbie is Lonely</title>
+    <title>Barbie needs friends</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -80,6 +80,7 @@
         const sumAmountElement = document.getElementById('sumAmount');
 
         let totalAmount = 0;
+        let isFirstClick = true;
 
         const videoFolderPath = 'clips/';
         const barbieFolderPath = 'barbies/';
@@ -113,6 +114,11 @@
         }
 
         playButton.addEventListener('click', () => {
+            if (isFirstClick) {
+                totalAmount = 0;
+                isFirstClick = false;
+            }
+
             const randomAmount = getRandomNumber(5, 1000);
             const randomVideoFile = getRandomVideo();
 
@@ -122,10 +128,10 @@
             video.src = videoFolderPath + randomVideoFile;
             randomNumberElement.textContent = randomAmount;
 
+            video.play();
+
             totalAmount += randomAmount;
             sumAmountElement.textContent = totalAmount;
-
-            video.play();
         });
 
         video.addEventListener('ended', () => {
