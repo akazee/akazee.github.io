@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Barbie needs friends</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-image: url('background.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        .video-container {
+            display: none;
+            text-align: center;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            margin-top: 20px;
+            padding: 20px;
+        }
+
+        #myVideo {
+            width: 100%;
+            max-height: calc(100vh - 120px); /* Adjust as needed */
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-top: 20px;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .barbie-image {
+            position: absolute;
+            display: none;
+            max-width: 100px;
+            max-height: 100px;
+            pointer-events: none;
+        }
+
+        #totalAmount {
+            font-size: 24px;
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <button id="playButton">Spend $<span id="randomNumber">0</span> to help Barbie make friends?</button>
+    <div class="video-container" id="videoContainer">
+        <video id="myVideo" controls>
+            Your browser does not support the video tag.
+        </video>
+    </div>
+    <img class="barbie-image" id="barbieImage" src="" alt="Barbie Image">
+    <div id="totalAmount">Thank you for spending $<span id="sumAmount">0</span> to help Barbie make friends!</div>
+    <script>
+        const playButton = document.getElementById('playButton');
+        const videoContainer = document.getElementById('videoContainer');
+        const video = document.getElementById('myVideo');
+        const randomNumberElement = document.getElementById('randomNumber');
+        const barbieImage = document.getElementById('barbieImage');
+        const sumAmountElement = document.getElementById('sumAmount');
+
+        let totalAmount = 0;
+        let isFirstClick = true;
+
+        const videoFolderPath = 'clips/';
+        const barbieFolderPath = 'barbies/';
+
+        const videoFiles = [
+            'test.mov',
+            'tectone.mov',
+            'clothes.mov',
+            'floor.mov',
+            'hiding.mov',
+            'major.mov',
+            'toe.mov',
+            'bob.mov'
+            // Add more video filenames here
+        ];
+
+        function getRandomNumber(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        function getRandomVideo() {
+            const randomIndex = Math.floor(Math.random() * videoFiles.length);
+            return videoFiles[randomIndex];
+        }
+
+        function showBarbieImage(filename) {
+            barbieImage.src = barbieFolderPath + filename;
+            barbieImage.style.left = `${Math.random() * (window.innerWidth - 100)}px`;
+            barbieImage.style.top = `${Math.random() * (window.innerHeight - 100)}px`;
+            barbieImage.style.display = 'block';
+        }
+
+        playButton.addEventListener('click', () => {
+            if (isFirstClick) {
+                totalAmount = 0;
+                isFirstClick = false;
+            }
+
+            const randomAmount = getRandomNumber(5, 1000);
+            const randomVideoFile = getRandomVideo();
+
+            playButton.style.display = 'none';
+            videoContainer.style.display = 'block';
+
+            video.src = videoFolderPath + randomVideoFile;
+            randomNumberElement.textContent = randomAmount;
+
+            video.play();
+
+            totalAmount += randomAmount;
+            sumAmountElement.textContent = totalAmount;
+        });
+
+        video.addEventListener('ended', () => {
+            videoContainer.style.display = 'none';
+            playButton.style.display = 'block';
+
+            const currentVideoFile = video.src.substring(video.src.lastIndexOf('/') + 1);
+            const imageFilename = currentVideoFile.replace('.mov', '.PNG');
+            showBarbieImage(imageFilename);
+        });
+    </script>
+</body>
+</html>
